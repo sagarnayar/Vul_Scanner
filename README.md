@@ -25,4 +25,9 @@ VulScanner is a **Go-based service** that scans a GitHub repository for JSON fil
 git clone https://github.com/yourusername/vulscanner.git
 cd vulscanner
 
-**Install Dependencies**
+Install Dependencies
+sh
+Copy
+Edit
+go mod tidy
+Build the Projec
