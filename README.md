@@ -97,6 +97,29 @@ go test ./... -cover
    - Send a GET request to `/query` with appropriate filters.
    - Verify that relevant JSON data is returned.
 
+### **Example Query Response**
+```sh
+PS C:\Users\sagar> Invoke-RestMethod -Uri "http://localhost:8080/query" -Method Post -Headers @{"Content-Type"="application/json"} -Body '{"filters": {"severity": "HIGH"}}'
+```
+**Sample Output:**
+```json
+{
+  "id": "CVE-2024-2222",
+  "severity": "HIGH",
+  "cvss": 8.2,
+  "status": "active",
+  "package_name": "spring-security",
+  "current_version": "5.6.0",
+  "fixed_version": "5.6.1",
+  "description": "Authentication bypass in Spring Security",
+  "published_date": "2025-01-27T00:00:00Z",
+  "link": "https://nvd.nist.gov/vuln/detail/CVE-2024-2222",
+  "risk_factors": "Authentication Bypass, High CVSS Score, Proof of Concept Exploit Available",
+  "source_file": "vulnscan1011.json",
+  "scan_time": "2025-02-11T01:44:40-05:00"
+}
+```
+
 ---
 
 ## 📌 **Docker Deployment**
@@ -112,3 +135,9 @@ docker run -p 8080:8080 vulscanner
 ```
 
 ---
+
+## 📌 **License**
+MIT License
+
+## 📌 **Author**
+- Your Name (@your-username)
