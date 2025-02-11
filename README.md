@@ -16,18 +16,83 @@ VulScanner is a **Go-based service** that scans a GitHub repository for JSON fil
 ## 📌 **Installation & Setup**
 
 ### **Prerequisites**
-- **Go** (>= 1.19)
-- **SQLite3**
-- **Docker** (optional, for containerized deployment)
+- **Go** (>= 1.19)  
+- **SQLite3**  
+- **Docker** (optional, for containerized deployment)  
 
 ### **Clone the Repository**
 ```sh
 git clone https://github.com/yourusername/vulscanner.git
 cd vulscanner
+```
 
-Install Dependencies
-sh
-Copy
-Edit
+### **Install Dependencies**
+```sh
 go mod tidy
-Build the Projec
+```
+
+### **Build the Project**
+```sh
+go build -o vulscanner
+```
+
+### **Run the Service**
+```sh
+./vulscanner
+```
+
+---
+
+## 📌 **Usage**
+
+### **1️⃣ Scan GitHub Repository**
+```sh
+POST /scan
+```
+**Request Body:**
+```json
+{
+  "repo_url": "https://github.com/example/repo"
+}
+```
+**Response:**
+```json
+{
+  "message": "Scan started successfully"
+}
+```
+
+### **2️⃣ Query JSON Data**
+```sh
+GET /query?key=value
+```
+**Response:**
+```json
+{
+  "results": [
+    { "id": 1, "data": "..." }
+  ]
+}
+```
+
+---
+
+## 📌 **Docker Deployment**
+
+### **Build the Docker Image**
+```sh
+docker build -t vulscanner .
+```
+
+### **Run the Container**
+```sh
+docker run -p 8080:8080 vulscanner
+```
+
+---
+
+## 📌 **License**
+MIT License
+
+## 📌 **Author**
+- Your Name (@your-username)
