@@ -13,9 +13,16 @@ import (
 	"vulscanner/models"
 )
 
+<<<<<<< HEAD
 // ScanRequest struct to parse incoming JSON request
 type ScanRequest struct {
 	Repo string `json:"repo"`
+=======
+// ScanRequest struct defines the expected request payload
+type ScanRequest struct {
+	Repo  string   `json:"repo"`
+	Files []string `json:"files,omitempty"`
+>>>>>>> baa51ca430d3c6997caa983ed5c7957922d5850a
 }
 
 // ScanResponse struct for API response
@@ -37,6 +44,7 @@ func ScanRepoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+<<<<<<< HEAD
 	// Fetch all JSON files dynamically
 	jsonFiles, err := fetchJSONFiles(req.Repo)
 	if err != nil {
@@ -45,6 +53,17 @@ func ScanRepoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Process each JSON file concurrently
+=======
+	// If files are not provided, fetch all JSON files from the repository
+	if len(req.Files) == 0 {
+		req.Files, err = fetchAllJSONFiles(req.Repo)
+		if err != nil {
+			http.Error(w, "Failed to fetch JSON files", http.StatusInternalServerError)
+			return
+		}
+	}
+
+>>>>>>> baa51ca430d3c6997caa983ed5c7957922d5850a
 	var wg sync.WaitGroup
 	for _, file := range jsonFiles {
 		wg.Add(1)
@@ -99,6 +118,49 @@ func fetchJSONFiles(repo string) ([]string, error) {
 	return jsonFiles, nil
 }
 
+// fetchAllJSONFiles retrieves all JSON files from the repository using GitHub API
+func fetchAllJSONFiles(repo string) ([]string, error) {
+	apiURL := fmt.Sprintf("https://api.github.com/repos/%s/contents/", repo)
+	log.Println("Fetching repository contents:", apiURL)
+
+	resp, err := http.Get(apiURL)
+	if err != nil {
+		log.Printf("Failed to fetch repo contents: %v", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("GitHub API returned error status: %d", resp.StatusCode)
+		return nil, fmt.Errorf("GitHub API error: %d", resp.StatusCode)
+	}
+
+	var contents []struct {
+		Name string `json:"name"`
+		Type string `json:"type"`
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal(body, &contents)
+	if err != nil {
+		return nil, err
+	}
+
+	var jsonFiles []string
+	for _, item := range contents {
+		if item.Type == "file" && strings.HasSuffix(item.Name, ".json") {
+			jsonFiles = append(jsonFiles, item.Name)
+		}
+	}
+
+	log.Printf("Found JSON files: %v", jsonFiles)
+	return jsonFiles, nil
+}
+
 // processFile fetches and processes a JSON file from GitHub
 func processFile(repo, file string) {
 	url := fmt.Sprintf("https://raw.githubusercontent.com/%s/main/%s", repo, file)
@@ -117,7 +179,11 @@ func processFile(repo, file string) {
 		return
 	}
 
+<<<<<<< HEAD
 	log.Println("Raw JSON Content:", string(data))
+=======
+	log.Println("Raw JSON Content:", string(data)) 
+>>>>>>> baa51ca430d3c6997caa983ed5c7957922d5850a
 
 	var scans []models.ScanData
 	err = json.Unmarshal(data, &scans)
@@ -128,7 +194,11 @@ func processFile(repo, file string) {
 
 	for _, scan := range scans {
 		for _, vuln := range scan.ScanResults.Vulnerabilities {
+<<<<<<< HEAD
 			log.Printf("Parsed Vulnerability: %+v\n", vuln)
+=======
+			log.Printf("Parsed Vulnerability: %+v\n", vuln) 
+>>>>>>> baa51ca430d3c6997caa983ed5c7957922d5850a
 			err := database.SaveVulnerability(vuln, file)
 			if err != nil {
 				log.Printf("Failed to save %s: %v", vuln.ID, err)
