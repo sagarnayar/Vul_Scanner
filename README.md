@@ -43,43 +43,19 @@ go build -o vulscanner
 
 ---
 
-## 📌 **Usage**
+## 📌 **Running & Testing Instructions**
 
-### **1️⃣ Scan GitHub Repository**
-```sh
-POST /scan
-```
-**Request Body:**
-```json
-{
-  "repo_url": "https://github.com/example/repo"
-}
-```
-**Response:**
-```json
-{
-  "message": "Scan started successfully"
-}
-```
+### **Running the Service**
+1. Ensure you have installed dependencies.
+2. Start the service:
+   ```sh
+   ./vulscanner
+   ```
+3. The service will be available at `http://localhost:8080`.
 
-### **2️⃣ Query JSON Data**
-```sh
-GET /query?key=value
-```
-**Response:**
-```json
-{
-  "results": [
-    { "id": 1, "data": "..." }
-  ]
-}
-```
+### **Testing Instructions**
 
----
-
-## 📌 **Testing Instructions**
-
-### **Automated Testing**
+#### **Automated Testing**
 Run the following command to execute tests and check test coverage:
 ```sh
 go test ./... -cover
@@ -88,14 +64,20 @@ go test ./... -cover
 - Integration tests validate API behavior with simulated GitHub responses.  
 - Test coverage report ensures code reliability and stability.  
 
-### **Manual Testing**
+#### **Manual Testing**
 1. **Run the service** using `./vulscanner`.
 2. **Test Scan API:**
    - Use Postman or `curl` to send a POST request to `/scan` with a valid GitHub repo URL.
    - Verify that JSON files are processed and stored in SQLite.
+   ```sh
+   curl -X POST "http://localhost:8080/scan" -H "Content-Type: application/json" -d '{"repo": "velancio/vulnerability_scans", "files": ["vulnscan1011.json"]}'
+   ```
 3. **Test Query API:**
    - Send a GET request to `/query` with appropriate filters.
    - Verify that relevant JSON data is returned.
+   ```sh
+   curl -X POST "http://localhost:8080/query" -H "Content-Type: application/json" -d '{"filters": {"severity": "HIGH"}}'
+   ```
 
 ### **Example Query Response**
 ```sh
