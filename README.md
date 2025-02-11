@@ -9,7 +9,7 @@ VulScanner is a **Go-based service** that scans a GitHub repository for JSON fil
 ✅ **Concurrency**: Processes multiple files in parallel for efficiency.  
 ✅ **Error Handling**: Retries GitHub API calls (up to **2 times**) upon failure.  
 ✅ **Docker Support**: Runs as a single-container service.  
-✅ **Testing**: Achieves **70%+ test coverage**.  
+✅ **Testing**: Achieves **70%+ test coverage** with unit and integration tests.  
 
 ---
 
@@ -74,6 +74,28 @@ GET /query?key=value
   ]
 }
 ```
+
+---
+
+## 📌 **Testing Instructions**
+
+### **Automated Testing**
+Run the following command to execute tests and check test coverage:
+```sh
+go test ./... -cover
+```
+- Unit tests cover core functionalities, including JSON parsing and database operations.  
+- Integration tests validate API behavior with simulated GitHub responses.  
+- Test coverage report ensures code reliability and stability.  
+
+### **Manual Testing**
+1. **Run the service** using `./vulscanner`.
+2. **Test Scan API:**
+   - Use Postman or `curl` to send a POST request to `/scan` with a valid GitHub repo URL.
+   - Verify that JSON files are processed and stored in SQLite.
+3. **Test Query API:**
+   - Send a GET request to `/query` with appropriate filters.
+   - Verify that relevant JSON data is returned.
 
 ---
 
