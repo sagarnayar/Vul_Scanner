@@ -118,8 +118,3 @@ docker run -p 8080:8080 vulscanner
 
 ---
 
-## 📌 **License**
-MIT License
-
-## 📌 **Author**
-- Your Name (@your-username)
