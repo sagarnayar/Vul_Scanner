@@ -51,7 +51,7 @@ go build -o vulscanner
    ```sh
    ./vulscanner
    ```
-3. The service will be available at `http://localhost:8080`.
+3. The service will be available at **`http://localhost:8080`**.
 
 ### **Testing Instructions**
 
@@ -60,47 +60,70 @@ Run the following command to execute tests and check test coverage:
 ```sh
 go test ./... -cover
 ```
-- Unit tests cover core functionalities, including JSON parsing and database operations.  
-- Integration tests validate API behavior with simulated GitHub responses.  
-- Test coverage report ensures code reliability and stability.  
+- **Unit tests** cover core functionalities, including JSON parsing and database operations.  
+- **Integration tests** validate API behavior with simulated GitHub responses.  
+- **Test coverage report** ensures code reliability and stability.  
 
 #### **Manual Testing**
 1. **Run the service** using `./vulscanner`.
 2. **Test Scan API:**
-   - Use Postman or `curl` to send a POST request to `/scan` with a valid GitHub repo URL.
-   - Verify that JSON files are processed and stored in SQLite.
+   - Use **Postman**, `curl`, or **PowerShell** to send a `POST` request to `/scan` with a valid GitHub repo URL.
+   - Verify that JSON files are processed and stored in **SQLite**.
+
+   **Using cURL (Linux/macOS/Windows with Git Bash):**
    ```sh
-   curl -X POST "http://localhost:8080/scan" -H "Content-Type: application/json" -d '{"repo": "velancio/vulnerability_scans", "files": ["vulnscan1011.json"]}'
-   ```
-3. **Test Query API:**
-   - Send a GET request to `/query` with appropriate filters.
-   - Verify that relevant JSON data is returned.
-   ```sh
-   curl -X POST "http://localhost:8080/query" -H "Content-Type: application/json" -d '{"filters": {"severity": "HIGH"}}'
+   curl -X POST "http://localhost:8080/scan" -H "Content-Type: application/json" -d '{"repo": "velancio/vulnerability_scans"}'
    ```
 
-### **Example Query Response**
-```sh
-PS C:\Users\sagar> Invoke-RestMethod -Uri "http://localhost:8080/query" -Method Post -Headers @{"Content-Type"="application/json"} -Body '{"filters": {"severity": "HIGH"}}'
-```
-**Sample Output:**
-```json
-{
-  "id": "CVE-2024-2222",
-  "severity": "HIGH",
-  "cvss": 8.2,
-  "status": "active",
-  "package_name": "spring-security",
-  "current_version": "5.6.0",
-  "fixed_version": "5.6.1",
-  "description": "Authentication bypass in Spring Security",
-  "published_date": "2025-01-27T00:00:00Z",
-  "link": "https://nvd.nist.gov/vuln/detail/CVE-2024-2222",
-  "risk_factors": "Authentication Bypass, High CVSS Score, Proof of Concept Exploit Available",
-  "source_file": "vulnscan1011.json",
-  "scan_time": "2025-02-11T01:44:40-05:00"
-}
-```
+   **Using PowerShell (Windows):**
+   ```powershell
+   Invoke-RestMethod -Uri "http://localhost:8080/scan" -Method Post -Headers @{"Content-Type"="application/json"} -Body '{"repo": "velancio/vulnerability_scans"}'
+   ```
+
+   **Expected Response:**
+   ```json
+   {
+     "message": "Scanning initiated",
+     "processed_files": ["vulnscan1011.json", "vulnscan1012.json"],
+     "status": "success"
+   }
+   ```
+
+3. **Test Query API:**
+   - Send a **POST** request to `/query` with appropriate filters.
+   - Verify that relevant JSON data is returned.
+
+   **Using cURL (Linux/macOS/Windows with Git Bash):**
+   ```sh
+   curl -X POST "http://localhost:8080/query" -H "Content-Type: application/json" -d '{"filters": {"severity": "HIGH"}}' | jq
+   ```
+   (*`jq` is optional but helps format JSON output nicely.*)
+
+   **Using PowerShell (Windows):**
+   ```powershell
+   Invoke-RestMethod -Uri "http://localhost:8080/query" -Method Post -Headers @{"Content-Type"="application/json"} -Body '{"filters": {"severity": "HIGH"}}' | ConvertTo-Json -Depth 10
+   ```
+
+   **Example Query Response:**
+   ```json
+   [
+     {
+       "id": "CVE-2024-2222",
+       "severity": "HIGH",
+       "cvss": 8.2,
+       "status": "active",
+       "package_name": "spring-security",
+       "current_version": "5.6.0",
+       "fixed_version": "5.6.1",
+       "description": "Authentication bypass in Spring Security",
+       "published_date": "2025-01-27T00:00:00Z",
+       "link": "https://nvd.nist.gov/vuln/detail/CVE-2024-2222",
+       "risk_factors": "Authentication Bypass, High CVSS Score, Proof of Concept Exploit Available",
+       "source_file": "vulnscan1011.json",
+       "scan_time": "2025-02-11T01:44:40-05:00"
+     }
+   ]
+   ```
 
 ---
 
@@ -115,6 +138,3 @@ docker build -t vulscanner .
 ```sh
 docker run -p 8080:8080 vulscanner
 ```
-
----
-
